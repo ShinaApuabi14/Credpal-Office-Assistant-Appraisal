@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Office Assistance Appraisal | CredPal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Playfair+Display:wght@600;700&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-900:#061233;
+    --navy-800:#0A1D4D;
+    --navy-700:#102A66;
+    --navy-600:#183A85;
+    --navy-500:#2450A8;
+    --sky:#4C8DFF;
+    --sky-soft:#E8F0FF;
+    --gold:#C9A33A;
+    --gold-soft:#FBF4DF;
+    --ink:#14213D;
+    --muted:#5D6B86;
+    --line:#DCE3F0;
+    --bg:#F2F5FB;
+    --card:#FFFFFF;
+    --ok:#1E9E6A;
+    --warn:#D98A1C;
+    --bad:#D2423B;
+    --radius:16px;
+    --shadow:0 10px 30px rgba(10,29,77,.08), 0 2px 6px rgba(10,29,77,.05);
+    --f-body:'Lato', 'Calibri Light', Calibri, 'Segoe UI', sans-serif;
+    --f-light:'Calibri Light', Calibri, 'Lato', 'Segoe UI', sans-serif;
+    --f-display:'Playfair Display', Georgia, serif;
+    --f-label:'Montserrat', 'Lato', sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--f-body);color:var(--ink);background:var(--bg);line-height:1.55;-webkit-font-smoothing:antialiased}
+
+  /* ---------- Top progress ---------- */
+  .progress-top{position:fixed;top:0;left:0;right:0;height:4px;background:rgba(255,255,255,.15);z-index:60}
+  .progress-top span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),#F2D27A);transition:width .35s ease}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;overflow:hidden;color:#fff;
+    background:
+      radial-gradient(900px 400px at 85% -10%, rgba(76,141,255,.35), transparent 60%),
+      radial-gradient(700px 380px at -10% 110%, rgba(201,163,58,.18), transparent 60%),
+      linear-gradient(135deg,var(--navy-900) 0%,var(--navy-800) 45%,var(--navy-600) 100%);
+    padding:38px 20px 120px;
+  }
+  .hero::after{
+    content:"";position:absolute;inset:0;opacity:.07;pointer-events:none;
+    background-image:linear-gradient(rgba(255,255,255,.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.6) 1px,transparent 1px);
+    background-size:42px 42px;
+  }
+  .hero-inner{max-width:1180px;margin:0 auto;position:relative;z-index:1}
+  .brand{display:flex;align-items:center;gap:12px;margin-bottom:46px}
+  .brand-mark{width:42px;height:42px;border-radius:12px;background:#fff;color:var(--navy-800);display:grid;place-items:center;font-family:var(--f-label);font-weight:700;font-size:18px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+  .brand-name{font-family:var(--f-label);font-weight:700;font-size:20px;letter-spacing:.3px}
+  .brand-name small{display:block;font-family:var(--f-light);font-weight:300;font-size:12.5px;opacity:.75;letter-spacing:1.6px;text-transform:uppercase}
+  .eyebrow{font-family:var(--f-label);font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#F2D27A;font-weight:600}
+  .hero h1{font-family:var(--f-display);font-weight:700;font-size:clamp(32px,5vw,52px);line-height:1.1;margin:10px 0 12px}
+  .hero p{font-family:var(--f-light);font-size:18px;max-width:640px;opacity:.88;font-weight:300}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+  .chip{font-family:var(--f-label);font-size:12px;font-weight:500;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(4px)}
+
+  /* ---------- Layout ---------- */
+  .wrap{max-width:1180px;margin:-84px auto 60px;padding:0 16px;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px;position:relative;z-index:2}
+  @media (max-width:980px){.wrap{grid-template-columns:1fr}.aside{order:-1}}
+
+  .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(220,227,240,.7);margin-bottom:22px;overflow:hidden}
+  .card-head{display:flex;align-items:center;gap:14px;padding:22px 26px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#FBFCFF,#fff)}
+  .step{width:38px;height:38px;flex:0 0 38px;border-radius:11px;background:var(--navy-800);color:#fff;display:grid;place-items:center;font-family:var(--f-label);font-weight:700;font-size:14px}
+  .card-head h2{font-family:var(--f-label);font-size:17px;font-weight:700;color:var(--navy-800)}
+  .card-head p{font-family:var(--f-light);font-size:14px;color:var(--muted)}
+  .card-body{padding:24px 26px}
+  @media (max-width:600px){.card-head,.card-body{padding:18px}}
+
+  /* ---------- Fields ---------- */
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+  .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .span-2{grid-column:span 2}
+  @media (max-width:700px){.grid,.grid.three{grid-template-columns:1fr}.span-2{grid-column:auto}}
+  .field label,.field .label{display:block;font-family:var(--f-label);font-size:12.5px;font-weight:600;color:var(--navy-700);margin-bottom:7px;letter-spacing:.2px}
+  .req{color:var(--bad);margin-left:2px}
+  .field input[type=text],.field input[type=email],.field input[type=date],.field select,.field textarea{
+    width:100%;font-family:var(--f-light);font-size:16px;color:var(--ink);
+    padding:12px 14px;border:1.5px solid var(--line);border-radius:11px;background:#FAFBFE;
+    transition:border-color .2s, box-shadow .2s, background .2s;outline:none;
+  }
+  .field textarea{min-height:104px;resize:vertical}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--sky);background:#fff;box-shadow:0 0 0 4px rgba(76,141,255,.14)}
+  .field .hint{font-family:var(--f-light);font-size:13px;color:var(--muted);margin-top:6px}
+  .invalid input,.invalid select,.invalid textarea{border-color:var(--bad)!important;background:#FFF7F6}
+  .err-msg{display:none;font-size:12.5px;color:var(--bad);margin-top:6px;font-family:var(--f-label)}
+  .invalid .err-msg{display:block}
+
+  /* ---------- Staff picker ---------- */
+  .staff-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}
+  @media (max-width:980px){.staff-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:420px){.staff-grid{grid-template-columns:1fr}}
+  .staff-card{position:relative;cursor:pointer;border:1.5px solid var(--line);border-radius:14px;padding:18px 14px;text-align:center;background:#fff;transition:all .2s}
+  .staff-card:hover{border-color:var(--sky);transform:translateY(-2px);box-shadow:0 8px 20px rgba(16,42,102,.1)}
+  .staff-card input{position:absolute;opacity:0;pointer-events:none}
+  .avatar{width:58px;height:58px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-label);font-weight:700;font-size:18px;color:var(--navy-800);background:var(--sky-soft);border:2px solid #fff;box-shadow:0 0 0 2px var(--line);transition:all .2s}
+  .staff-card .s-name{font-family:var(--f-body);font-weight:700;font-size:14.5px;line-height:1.3;color:var(--ink)}
+  .staff-card .s-role{font-family:var(--f-light);font-size:12.5px;color:var(--muted);margin-top:3px}
+  .staff-card .tick{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;background:var(--navy-800);color:#fff;display:grid;place-items:center;font-size:12px;opacity:0;transform:scale(.6);transition:all .2s}
+  .staff-card.selected{border-color:var(--navy-700);background:linear-gradient(180deg,#F5F8FF,#fff);box-shadow:0 10px 24px rgba(16,42,102,.14)}
+  .staff-card.selected .avatar{background:var(--navy-800);color:#fff;box-shadow:0 0 0 2px var(--gold)}
+  .staff-card.selected .tick{opacity:1;transform:scale(1)}
+  .staff-grid.invalid .staff-card{border-color:#F1B8B4}
+
+  /* ---------- Rating scale legend ---------- */
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+  .legend span{font-family:var(--f-label);font-size:11.5px;font-weight:600;padding:6px 11px;border-radius:8px;background:var(--bg);color:var(--navy-700)}
+  .legend b{color:var(--navy-800);margin-right:4px}
+
+  /* ---------- Criteria ---------- */
+  .crit{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;padding:18px 0;border-bottom:1px dashed var(--line)}
+  .crit:last-child{border-bottom:none}
+  .crit-info{display:flex;gap:12px}
+  .crit-no{font-family:var(--f-label);font-size:12px;font-weight:700;color:var(--sky);min-width:24px;padding-top:2px}
+  .crit h4{font-family:var(--f-body);font-weight:700;font-size:15.5px;color:var(--ink)}
+  .crit p{font-family:var(--f-light);font-size:14px;color:var(--muted);margin-top:2px}
+  .crit-rate{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+  .pills{display:flex;gap:6px}
+  .pill{position:relative;cursor:pointer}
+  .pill input{position:absolute;opacity:0;pointer-events:none}
+  .pill span{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;border:1.5px solid var(--line);font-family:var(--f-label);font-weight:700;font-size:15px;color:var(--navy-700);background:#fff;transition:all .18s}
+  .pill:hover span{border-color:var(--sky);color:var(--sky)}
+  .pill input:focus-visible + span{box-shadow:0 0 0 4px rgba(76,141,255,.25)}
+  .pill input:checked + span{background:var(--navy-800);border-color:var(--navy-800);color:#fff;transform:translateY(-1px);box-shadow:0 6px 14px rgba(10,29,77,.25)}
+  .pill[data-v="5"] input:checked + span{background:linear-gradient(135deg,var(--navy-800),var(--navy-500));box-shadow:0 0 0 2px var(--gold),0 6px 14px rgba(10,29,77,.25)}
+  .rate-word{font-family:var(--f-label);font-size:11.5px;font-weight:600;color:var(--muted);min-height:16px}
+  .note-btn{background:none;border:none;color:var(--sky);font-family:var(--f-label);font-size:12px;font-weight:600;cursor:pointer;padding:2px 0}
+  .note-btn:hover{text-decoration:underline}
+  .crit-note{grid-column:1/-1;width:100%;font-family:var(--f-light);font-size:15px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:#FAFBFE;min-height:66px;resize:vertical;outline:none}
+  .crit-note:focus{border-color:var(--sky);background:#fff}
+  .crit.invalid .pill span{border-color:#F1B8B4;background:#FFF7F6}
+  @media (max-width:640px){
+    .crit{grid-template-columns:1fr}
+    .crit-rate{align-items:stretch}
+    .pills{justify-content:space-between}
+    .pill{flex:1}.pill span{width:100%}
+  }
+
+  /* ---------- Checkbox / radio lists ---------- */
+  .opt-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  @media (max-width:640px){.opt-grid{grid-template-columns:1fr}}
+  .opt{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;font-family:var(--f-light);font-size:15.5px;transition:all .18s;background:#fff}
+  .opt:hover{border-color:var(--sky)}
+  .opt input{accent-color:var(--navy-800);width:17px;height:17px;margin-top:3px;flex:0 0 17px}
+  .opt:has(input:checked){border-color:var(--navy-700);background:#F5F8FF}
+  .opt-grid.invalid .opt{border-color:#F1B8B4}
+
+  .declare{display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:12px;background:var(--gold-soft);border:1px solid #EEDDAA;font-family:var(--f-light);font-size:15.5px;cursor:pointer}
+  .declare input{accent-color:var(--navy-800);width:18px;height:18px;margin-top:3px;flex:0 0 18px}
+  .declare.invalid{border-color:var(--bad);background:#FFF4F3}
+
+  /* ---------- Aside score panel ---------- */
+  .aside{position:relative}
+  .score-panel{position:sticky;top:20px}
+  .score-card{background:linear-gradient(160deg,var(--navy-800),var(--navy-600));color:#fff;border-radius:var(--radius);padding:24px;box-shadow:0 18px 40px rgba(10,29,77,.3)}
+  .score-card h3{font-family:var(--f-label);font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:#F2D27A;font-weight:600}
+  .score-staff{font-family:var(--f-display);font-size:21px;margin:6px 0 18px;line-height:1.25;min-height:27px}
+  .ring-wrap{display:flex;align-items:center;gap:18px}
+  .ring{position:relative;width:124px;height:124px;flex:0 0 124px}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .track{stroke:rgba(255,255,255,.14)}
+  .ring .bar{stroke:url(#goldGrad);stroke-linecap:round;transition:stroke-dashoffset .6s ease}
+  .ring-val{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+  .ring-val strong{font-family:var(--f-label);font-size:28px;font-weight:700;display:block;line-height:1}
+  .ring-val small{font-family:var(--f-light);font-size:12px;opacity:.75}
+  .grade-tag{display:inline-block;font-family:var(--f-label);font-size:12.5px;font-weight:700;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22)}
+  .avg-line{font-family:var(--f-light);font-size:14px;opacity:.85;margin-top:8px}
+  .cats{margin-top:22px;display:grid;gap:12px}
+  .cat-row{font-family:var(--f-light);font-size:13.5px}
+  .cat-row .top{display:flex;justify-content:space-between;margin-bottom:5px;opacity:.9}
+  .cat-row .bar-bg{height:7px;border-radius:9px;background:rgba(255,255,255,.14);overflow:hidden}
+  .cat-row .bar-fill{height:100%;width:0;border-radius:9px;background:linear-gradient(90deg,var(--sky),#9CC2FF);transition:width .5s ease}
+  .rated-count{margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.14);font-family:var(--f-label);font-size:12.5px;display:flex;justify-content:space-between;opacity:.9}
+  .band-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px;margin-top:16px}
+  .band-card h4{font-family:var(--f-label);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--navy-700);margin-bottom:10px}
+  .band{display:flex;justify-content:space-between;font-family:var(--f-light);font-size:14px;padding:6px 0;border-bottom:1px solid var(--bg)}
+  .band:last-child{border-bottom:none}
+  .band b{font-family:var(--f-label);font-weight:600;font-size:12.5px;color:var(--navy-800)}
+  @media (max-width:980px){.score-panel{position:static}.band-card{display:none}}
+
+  /* ---------- Submit ---------- */
+  .submit-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;padding:22px 26px}
+  .submit-bar p{font-family:var(--f-light);font-size:14px;color:var(--muted);max-width:460px}
+  .btn{font-family:var(--f-label);font-weight:700;font-size:15px;border:none;border-radius:12px;padding:15px 28px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:10px}
+  .btn-primary{background:linear-gradient(135deg,var(--navy-800),var(--navy-500));color:#fff;box-shadow:0 10px 24px rgba(16,42,102,.3)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(16,42,102,.36)}
+  .btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
+  .btn-ghost{background:var(--sky-soft);color:var(--navy-800)}
+  .btn-ghost:hover{background:#DCE8FF}
+
+  /* ---------- Overlay, modal, toast ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(6,18,51,.6);backdrop-filter:blur(4px);display:none;place-items:center;z-index:100;padding:20px}
+  .overlay.show{display:grid}
+  .spinner{width:54px;height:54px;border-radius:50%;border:4px solid rgba(255,255,255,.25);border-top-color:#F2D27A;animation:spin 0.9s linear infinite}
+  .loading-text{color:#fff;font-family:var(--f-label);font-size:14px;margin-top:16px;text-align:center}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .modal{background:#fff;border-radius:20px;max-width:440px;width:100%;padding:34px 30px;text-align:center;box-shadow:0 30px 60px rgba(0,0,0,.3);animation:pop .3s ease}
+  @keyframes pop{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+  .modal .check{width:70px;height:70px;border-radius:50%;margin:0 auto 18px;background:linear-gradient(135deg,var(--navy-800),var(--navy-500));display:grid;place-items:center;color:#fff;font-size:32px;box-shadow:0 0 0 6px var(--sky-soft)}
+  .modal h3{font-family:var(--f-display);font-size:26px;color:var(--navy-800);margin-bottom:8px}
+  .modal p{font-family:var(--f-light);font-size:16px;color:var(--muted)}
+  .ref-box{margin:18px 0 22px;padding:14px;border-radius:12px;background:var(--bg);font-family:var(--f-label);font-size:14px;color:var(--navy-800)}
+  .ref-box span{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(120px);background:var(--navy-900);color:#fff;padding:14px 20px;border-radius:12px;font-family:var(--f-label);font-size:14px;box-shadow:0 14px 30px rgba(0,0,0,.25);transition:transform .3s ease;z-index:120;max-width:92vw;border-left:4px solid var(--gold)}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  .toast.error{border-left-color:var(--bad)}
+
+  footer{text-align:center;font-family:var(--f-light);font-size:13px;color:var(--muted);padding:0 16px 40px}
+</style>
+</head>
+<body>
+
+<div class="progress-top"><span id="topBar"></span></div>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="brand">
+      <div class="brand-mark">C</div>
+      <div class="brand-name">CredPal<small>Human Resources</small></div>
+    </div>
+    <div class="eyebrow">Performance Review</div>
+    <h1>Office Assistance<br>Team Appraisal</h1>
+    <p>Rate each team member on their duties, work habits and conduct for the review period. Scores update as you go, and the result is saved straight to the appraisal records.</p>
+    <div class="chips">
+      <span class="chip">4 team members</span>
+      <span class="chip">16 rated areas</span>
+      <span class="chip">About 10 minutes</span>
+    </div>
+  </div>
+</header>
+
+<form id="appraisalForm" novalidate>
+<div class="wrap">
+  <main>
+
+    <!-- 1. Staff & period -->
+    <section class="card" id="sec-info">
+      <div class="card-head">
+        <div class="step">01</div>
+        <div><h2>Staff and Review Period</h2><p>Pick the team member you are appraising</p></div>
+      </div>
+      <div class="card-body">
+        <div class="staff-grid" id="staffGrid"></div>
+        <div class="grid">
+          <div class="field">
+            <label for="staffId">Staff ID</label>
+            <input type="text" id="staffId" placeholder="e.g. CP-0123">
+          </div>
+          <div class="field">
+            <label for="designation">Designation</label>
+            <input type="text" id="designation" value="Office Assistant">
+          </div>
+          <div class="field">
+            <label for="appraisalType">Appraisal Type<span class="req">*</span></label>
+            <select id="appraisalType" required>
+              <option value="">Select type</option>
+              <option>Monthly</option>
+              <option>Quarterly</option>
+              <option>Half-Year</option>
+              <option>Annual</option>
+              <option>Probation / Confirmation</option>
+            </select>
+            <div class="err-msg">Choose the appraisal type</div>
+          </div>
+          <div class="field">
+            <label for="department">Department</label>
+            <input type="text" id="department" value="Office Assistance (Admin)">
+          </div>
+          <div class="field">
+            <label for="periodStart">Review Period Start<span class="req">*</span></label>
+            <input type="date" id="periodStart" required>
+            <div class="err-msg">Enter the start date</div>
+          </div>
+          <div class="field">
+            <label for="periodEnd">Review Period End<span class="req">*</span></label>
+            <input type="date" id="periodEnd" required>
+            <div class="err-msg">Enter an end date after the start date</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Appraiser -->
+    <section class="card" id="sec-appraiser">
+      <div class="card-head">
+        <div class="step">02</div>
+        <div><h2>Appraiser Details</h2><p>The supervisor or manager completing this review</p></div>
+      </div>
+      <div class="card-body">
+        <div class="grid">
+          <div class="field">
+            <label for="appraiserName">Appraiser Name<span class="req">*</span></label>
+            <input type="text" id="appraiserName" required placeholder="Full name">
+            <div class="err-msg">Enter your name</div>
+          </div>
+          <div class="field">
+            <label for="appraiserRole">Appraiser Designation<span class="req">*</span></label>
+            <input type="text" id="appraiserRole" required placeholder="e.g. Admin Manager">
+            <div class="err-msg">Enter your designation</div>
+          </div>
+          <div class="field">
+            <label for="appraiserEmail">Appraiser Email<span class="req">*</span></label>
+            <input type="email" id="appraiserEmail" required placeholder="name@credpal.com">
+            <div class="err-msg">Enter a valid email address</div>
+          </div>
+          <div class="field">
+            <label for="reviewDate">Date of Review<span class="req">*</span></label>
+            <input type="date" id="reviewDate" required>
+            <div class="err-msg">Enter the review date</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3-5. Rating sections (rendered by JS) -->
+    <div id="ratingSections"></div>
+
+    <!-- 6. Narrative -->
+    <section class="card" id="sec-review">
+      <div class="card-head">
+        <div class="step">06</div>
+        <div><h2>Performance Summary</h2><p>Your written assessment of the period</p></div>
+      </div>
+      <div class="card-body">
+        <div class="grid">
+          <div class="field">
+            <label for="strengths">Key Strengths<span class="req">*</span></label>
+            <textarea id="strengths" required placeholder="What does this person do especially well?"></textarea>
+            <div class="err-msg">Add at least one strength</div>
+          </div>
+          <div class="field">
+            <label for="improvements">Areas for Improvement<span class="req">*</span></label>
+            <textarea id="improvements" required placeholder="Where should they get better?"></textarea>
+            <div class="err-msg">Add at least one area to improve</div>
+          </div>
+          <div class="field">
+            <label for="achievements">Notable Contributions This Period</label>
+            <textarea id="achievements" placeholder="Extra effort, praise from colleagues, problems they solved"></textarea>
+          </div>
+          <div class="field">
+            <label for="goals">Goals for Next Period<span class="req">*</span></label>
+            <textarea id="goals" required placeholder="Two or three clear targets for the next review"></textarea>
+            <div class="err-msg">Set at least one goal</div>
+          </div>
+          <div class="field span-2">
+            <span class="label">Training Needs</span>
+            <div class="opt-grid" id="trainingGrid"></div>
+            <input type="text" id="trainingOther" placeholder="Other training (optional)" style="margin-top:10px;width:100%;font-family:var(--f-light);font-size:16px;padding:12px 14px;border:1.5px solid var(--line);border-radius:11px;background:#FAFBFE;outline:none">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Recommendation & sign-off -->
+    <section class="card" id="sec-recommend">
+      <div class="card-head">
+        <div class="step">07</div>
+        <div><h2>Recommendation and Sign-off</h2><p>Your overall recommendation for this staff member</p></div>
+      </div>
+      <div class="card-body">
+        <div class="field" style="margin-bottom:18px">
+          <span class="label">Overall Recommendation<span class="req">*</span></span>
+          <div class="opt-grid" id="recGrid"></div>
+          <div class="err-msg" id="recErr" style="display:none">Choose a recommendation</div>
+        </div>
+        <div class="grid">
+          <div class="field span-2">
+            <label for="recNotes">Reason for Recommendation</label>
+            <textarea id="recNotes" placeholder="Briefly explain your recommendation"></textarea>
+          </div>
+          <div class="field span-2">
+            <label for="staffComments">Staff Member's Comments</label>
+            <textarea id="staffComments" placeholder="Optional. Comments from the staff member after discussing this appraisal"></textarea>
+          </div>
+          <div class="field span-2">
+            <label class="opt" style="margin-bottom:12px">
+              <input type="checkbox" id="discussed">
+              <span>This appraisal has been discussed with the staff member</span>
+            </label>
+            <label class="declare" id="declareBox">
+              <input type="checkbox" id="declaration">
+              <span>I confirm that this appraisal is a fair and honest assessment of the staff member's performance for the period stated above.</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="submit-bar" style="border-top:1px solid var(--line)">
+        <p>Check the score panel before you submit. Once sent, the appraisal is recorded with a reference number.</p>
+        <button type="submit" class="btn btn-primary" id="submitBtn">Submit Appraisal <span aria-hidden="true">&rarr;</span></button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Score panel -->
+  <aside class="aside">
+    <div class="score-panel">
+      <div class="score-card">
+        <h3>Live Score</h3>
+        <div class="score-staff" id="panelStaff">No staff selected</div>
+        <div class="ring-wrap">
+          <div class="ring">
+            <svg width="124" height="124" viewBox="0 0 124 124">
+              <defs>
+                <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#F2D27A"/>
+                  <stop offset="100%" stop-color="#C9A33A"/>
+                </linearGradient>
+              </defs>
+              <circle class="track" cx="62" cy="62" r="52" fill="none" stroke-width="10"/>
+              <circle class="bar" id="ringBar" cx="62" cy="62" r="52" fill="none" stroke-width="10" stroke-dasharray="326.73" stroke-dashoffset="326.73"/>
+            </svg>
+            <div class="ring-val"><div><strong id="pctVal">0%</strong><small>overall</small></div></div>
+          </div>
+          <div>
+            <div class="grade-tag" id="gradeTag">Not rated</div>
+            <div class="avg-line">Average: <b id="avgVal">0.00</b> / 5</div>
+          </div>
+        </div>
+        <div class="cats" id="catBars"></div>
+        <div class="rated-count"><span>Areas rated</span><span id="ratedCount">0 / 16</span></div>
+      </div>
+      <div class="band-card">
+        <h4>Grade Bands</h4>
+        <div class="band"><span>Outstanding</span><b>90% and above</b></div>
+        <div class="band"><span>Exceeds Expectations</span><b>75 to 89%</b></div>
+        <div class="band"><span>Meets Expectations</span><b>60 to 74%</b></div>
+        <div class="band"><span>Needs Improvement</span><b>45 to 59%</b></div>
+        <div class="band"><span>Unsatisfactory</span><b>Below 45%</b></div>
+      </div>
+    </div>
+  </aside>
+</div>
+</form>
+
+<footer>CredPal Limited &middot; Office Assistance Team Appraisal &middot; Confidential</footer>
+
+<div class="overlay" id="loading">
+  <div><div class="spinner" style="margin:0 auto"></div><div class="loading-text">Saving appraisal...</div></div>
+</div>
+
+<div class="overlay" id="successModal">
+  <div class="modal">
+    <div class="check">&#10003;</div>
+    <h3>Appraisal Saved</h3>
+    <p id="successText">The appraisal has been recorded.</p>
+    <div class="ref-box"><span>Reference</span><div id="refVal">-</div></div>
+    <button type="button" class="btn btn-primary" id="anotherBtn" style="width:100%;justify-content:center">Appraise Another Staff</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== CONFIG: paste your Apps Script Web App URL here ===== */
+const CONFIG = {
+  SCRIPT_URL: 'PASTE_YOUR_WEB_APP_URL_HERE'
+};
+
+const TEAM = [
+  { name: 'Nofisat Temitope Beyioku',        initials: 'NB' },
+  { name: 'Famitoh Omowunmi Hammed',         initials: 'FH' },
+  { name: 'Mafinuyomi Oluwatimilehin David', initials: 'MD' },
+  { name: 'Modupe Seun Talabi',              initials: 'MT' }
+];
+
+const SCALE = { 1:'Poor', 2:'Fair', 3:'Good', 4:'Very Good', 5:'Outstanding' };
+
+const SECTIONS = [
+  { id:'core', step:'03', title:'Core Duties', sub:'How well they handle the day-to-day work of the role', items:[
+    { key:'cleanliness', label:'Office cleanliness and hygiene', desc:'Keeps offices, meeting rooms, restrooms and the kitchen clean and orderly' },
+    { key:'errands',     label:'Errands and dispatch', desc:'Delivers documents, mail and parcels accurately and on time' },
+    { key:'reception',   label:'Visitor and guest handling', desc:'Receives visitors politely and directs them to the right person' },
+    { key:'refreshment', label:'Refreshments and kitchen upkeep', desc:'Serves refreshments during meetings and keeps the kitchen in order' },
+    { key:'supplies',    label:'Office supplies and inventory', desc:'Tracks consumables and reports low stock before it runs out' },
+    { key:'equipment',   label:'Care of equipment and facilities', desc:'Handles office equipment with care and reports faults quickly' }
+  ]},
+  { id:'habits', step:'04', title:'Work Habits', sub:'Reliability, timekeeping and compliance', items:[
+    { key:'punctuality', label:'Punctuality and attendance', desc:'Resumes on time and is rarely absent without notice' },
+    { key:'timemgmt',    label:'Time management', desc:'Plans the day well and finishes tasks within expected time' },
+    { key:'dependable',  label:'Dependability', desc:'Gets work done without constant reminders or follow-up' },
+    { key:'policy',      label:'Policy and safety compliance', desc:'Follows company rules, safety and security procedures' },
+    { key:'appearance',  label:'Dress and appearance', desc:'Neat, well groomed and follows the dress code' }
+  ]},
+  { id:'behaviour', step:'05', title:'Behaviour and Attitude', sub:'How they work with people', items:[
+    { key:'communication', label:'Communication', desc:'Listens well, understands instructions and passes messages correctly' },
+    { key:'teamwork',      label:'Teamwork and cooperation', desc:'Supports colleagues and works well with other departments' },
+    { key:'attitude',      label:'Attitude and courtesy', desc:'Respectful, calm and pleasant to staff and visitors' },
+    { key:'integrity',     label:'Integrity and confidentiality', desc:'Honest, trustworthy and discreet with documents and information' },
+    { key:'initiative',    label:'Initiative and willingness to learn', desc:'Spots what needs doing and is open to feedback and new tasks' }
+  ]}
+];
+
+const TRAINING = ['Customer and visitor service','Office hygiene and sanitation','Health and safety','Basic computer skills','Time management','Communication skills','Records and dispatch handling','Inventory and stock control'];
+
+const RECS = ['Retain at current level','Confirm appointment','Recommend for promotion','Recommend for salary review','Recommend for training','Place on performance improvement plan'];
+
+const ALL_ITEMS = SECTIONS.flatMap(s => s.items.map(i => ({...i, section:s})));
+const $ = id => document.getElementById(id);
+const form = $('appraisalForm');
+
+/* ---------- Render ---------- */
+function renderStaff(){
+  $('staffGrid').innerHTML = TEAM.map((t,i) => `
+    <label class="staff-card">
+      <input type="radio" name="staff" value="${t.name}">
+      <span class="tick">&#10003;</span>
+      <div class="avatar">${t.initials}</div>
+      <div class="s-name">${t.name}</div>
+      <div class="s-role">Office Assistant</div>
+    </label>`).join('');
+  $('staffGrid').addEventListener('change', e => {
+    document.querySelectorAll('.staff-card').forEach(c => c.classList.toggle('selected', c.querySelector('input').checked));
+    $('staffGrid').classList.remove('invalid');
+    $('panelStaff').textContent = e.target.value;
+    update();
+  });
+}
+
+function renderSections(){
+  let n = 0;
+  $('ratingSections').innerHTML = SECTIONS.map(s => `
+    <section class="card" id="sec-${s.id}">
+      <div class="card-head">
+        <div class="step">${s.step}</div>
+        <div><h2>${s.title}</h2><p>${s.sub}</p></div>
+      </div>
+      <div class="card-body">
+        <div class="legend">${Object.entries(SCALE).map(([v,l]) => `<span><b>${v}</b>${l}</span>`).join('')}</div>
+        ${s.items.map(it => { n++; return `
+        <div class="crit" data-key="${it.key}">
+          <div class="crit-info">
+            <span class="crit-no">${String(n).padStart(2,'0')}</span>
+            <div><h4>${it.label}</h4><p>${it.desc}</p></div>
+          </div>
+          <div class="crit-rate">
+            <div class="pills" role="radiogroup" aria-label="${it.label}">
+              ${[1,2,3,4,5].map(v => `<label class="pill" data-v="${v}" title="${SCALE[v]}"><input type="radio" name="r_${it.key}" value="${v}"><span>${v}</span></label>`).join('')}
+            </div>
+            <div class="rate-word" id="w_${it.key}"></div>
+            <button type="button" class="note-btn" data-note="${it.key}">+ Add note</button>
+          </div>
+          <textarea class="crit-note" id="n_${it.key}" placeholder="Note on ${it.label.toLowerCase()} (optional)" hidden></textarea>
+        </div>`; }).join('')}
+      </div>
+    </section>`).join('');
+
+  $('ratingSections').addEventListener('change', e => {
+    if (e.target.type !== 'radio') return;
+    const key = e.target.name.slice(2);
+    $('w_' + key).textContent = SCALE[e.target.value];
+    e.target.closest('.crit').classList.remove('invalid');
+    update();
+  });
+  $('ratingSections').addEventListener('click', e => {
+    const btn = e.target.closest('.note-btn');
+    if (!btn) return;
+    const ta = $('n_' + btn.dataset.note);
+    ta.hidden = !ta.hidden;
+    btn.textContent = ta.hidden ? '+ Add note' : '- Hide note';
+    if (!ta.hidden) ta.focus();
+  });
+}
+
+function renderOptions(){
+  $('trainingGrid').innerHTML = TRAINING.map(t => `<label class="opt"><input type="checkbox" name="training" value="${t}"><span>${t}</span></label>`).join('');
+  $('recGrid').innerHTML = RECS.map(r => `<label class="opt"><input type="radio" name="recommendation" value="${r}"><span>${r}</span></label>`).join('');
+  $('recGrid').addEventListener('change', () => { $('recGrid').classList.remove('invalid'); $('recErr').style.display='none'; update(); });
+  $('catBars').innerHTML = SECTIONS.map(s => `
+    <div class="cat-row"><div class="top"><span>${s.title}</span><span id="cv_${s.id}">-</span></div>
+    <div class="bar-bg"><div class="bar-fill" id="cb_${s.id}"></div></div></div>`).join('');
+}
+
+/* ---------- Scoring ---------- */
+function ratingOf(key){
+  const c = form.querySelector(`input[name="r_${key}"]:checked`);
+  return c ? Number(c.value) : null;
+}
+function gradeFor(pct){
+  if (pct >= 90) return 'Outstanding';
+  if (pct >= 75) return 'Exceeds Expectations';
+  if (pct >= 60) return 'Meets Expectations';
+  if (pct >= 45) return 'Needs Improvement';
+  return 'Unsatisfactory';
+}
+function scores(){
+  const cats = {};
+  let total = 0, count = 0;
+  SECTIONS.forEach(s => {
+    const vals = s.items.map(i => ratingOf(i.key)).filter(v => v !== null);
+    cats[s.id] = vals.length ? vals.reduce((a,b)=>a+b,0) / vals.length : null;
+    total += vals.reduce((a,b)=>a+b,0);
+    count += vals.length;
+  });
+  const avg = count ? total / count : 0;
+  const pct = Math.round((avg / 5) * 100);
+  return { cats, avg, pct, count, grade: count ? gradeFor(pct) : 'Not rated' };
+}
+
+function update(){
+  const s = scores();
+  $('pctVal').textContent = s.pct + '%';
+  $('avgVal').textContent = s.avg.toFixed(2);
+  $('gradeTag').textContent = s.grade;
+  $('ringBar').style.strokeDashoffset = 326.73 * (1 - s.pct / 100);
+  $('ratedCount').textContent = `${s.count} / ${ALL_ITEMS.length}`;
+  SECTIONS.forEach(sec => {
+    const v = s.cats[sec.id];
+    $('cv_' + sec.id).textContent = v === null ? '-' : v.toFixed(1);
+    $('cb_' + sec.id).style.width = v === null ? '0' : (v / 5 * 100) + '%';
+  });
+  // overall completion for the top bar
+  const req = ['appraisalType','periodStart','periodEnd','appraiserName','appraiserRole','appraiserEmail','reviewDate','strengths','improvements','goals'];
+  let done = req.filter(id => $(id).value.trim()).length + s.count;
+  if (form.querySelector('input[name="staff"]:checked')) done++;
+  if (form.querySelector('input[name="recommendation"]:checked')) done++;
+  if ($('declaration').checked) done++;
+  const totalReq = req.length + ALL_ITEMS.length + 3;
+  $('topBar').style.width = Math.round(done / totalReq * 100) + '%';
+}
+
+/* ---------- Validation ---------- */
+function setInvalid(el, bad){ (el.closest('.field') || el).classList.toggle('invalid', bad); }
+
+function validate(){
+  let first = null;
+  const flag = el => { if (!first) first = el; };
+
+  if (!form.querySelector('input[name="staff"]:checked')) { $('staffGrid').classList.add('invalid'); flag($('staffGrid')); }
+
+  ['appraisalType','periodStart','periodEnd','appraiserName','appraiserRole','appraiserEmail','reviewDate'].forEach(id => {
+    const el = $(id); const bad = !el.value.trim(); setInvalid(el, bad); if (bad) flag(el);
+  });
+  const email = $('appraiserEmail');
+  if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) { setInvalid(email, true); flag(email); }
+  if ($('periodStart').value && $('periodEnd').value && $('periodEnd').value < $('periodStart').value) { setInvalid($('periodEnd'), true); flag($('periodEnd')); }
+
+  ALL_ITEMS.forEach(it => {
+    const row = form.querySelector(`.crit[data-key="${it.key}"]`);
+    const bad = ratingOf(it.key) === null; row.classList.toggle('invalid', bad); if (bad) flag(row);
+  });
+
+  ['strengths','improvements','goals'].forEach(id => {
+    const el = $(id); const bad = !el.value.trim(); setInvalid(el, bad); if (bad) flag(el);
+  });
+
+  if (!form.querySelector('input[name="recommendation"]:checked')) { $('recGrid').classList.add('invalid'); $('recErr').style.display='block'; flag($('recGrid')); }
+  if (!$('declaration').checked) { $('declareBox').classList.add('invalid'); flag($('declareBox')); }
+
+  if (first) { first.scrollIntoView({ behavior:'smooth', block:'center' }); toast('Some required fields are still empty. They are marked in red.', true); }
+  return !first;
+}
+
+/* ---------- Submit ---------- */
+function makeRef(){
+  const d = new Date();
+  const ymd = d.getFullYear() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0');
+  const rnd = Math.random().toString(36).slice(2,6).toUpperCase();
+  return `APR-${ymd}-${rnd}`;
+}
+
+function buildFields(ref){
+  const s = scores();
+  const training = [...form.querySelectorAll('input[name="training"]:checked')].map(c => c.value);
+  if ($('trainingOther').value.trim()) training.push($('trainingOther').value.trim());
+  const f = [
+    ['Reference', ref],
+    ['Submitted At', new Date().toLocaleString('en-GB', { timeZone:'Africa/Lagos' })],
+    ['Staff Name', form.querySelector('input[name="staff"]:checked').value],
+    ['Staff ID', $('staffId').value.trim()],
+    ['Designation', $('designation').value.trim()],
+    ['Department', $('department').value.trim()],
+    ['Appraisal Type', $('appraisalType').value],
+    ['Period Start', $('periodStart').value],
+    ['Period End', $('periodEnd').value],
+    ['Appraiser Name', $('appraiserName').value.trim()],
+    ['Appraiser Designation', $('appraiserRole').value.trim()],
+    ['Appraiser Email', $('appraiserEmail').value.trim()],
+    ['Review Date', $('reviewDate').value]
+  ];
+  ALL_ITEMS.forEach(it => f.push([it.label + ' (Rating)', ratingOf(it.key)]));
+  SECTIONS.forEach(sec => f.push([sec.title + ' Avg', Number((s.cats[sec.id] || 0).toFixed(2))]));
+  f.push(['Overall Avg (out of 5)', Number(s.avg.toFixed(2))]);
+  f.push(['Overall Score (%)', s.pct]);
+  f.push(['Grade', s.grade]);
+  f.push(['Key Strengths', $('strengths').value.trim()]);
+  f.push(['Areas for Improvement', $('improvements').value.trim()]);
+  f.push(['Notable Contributions', $('achievements').value.trim()]);
+  f.push(['Goals for Next Period', $('goals').value.trim()]);
+  f.push(['Training Needs', training.join(', ')]);
+  f.push(['Recommendation', form.querySelector('input[name="recommendation"]:checked').value]);
+  f.push(['Reason for Recommendation', $('recNotes').value.trim()]);
+  f.push(['Staff Comments', $('staffComments').value.trim()]);
+  f.push(['Discussed With Staff', $('discussed').checked ? 'Yes' : 'No']);
+  f.push(['Appraiser Declaration', 'Confirmed']);
+  const notes = ALL_ITEMS.map(it => [it.label, $('n_' + it.key).value.trim()]).filter(([,v]) => v).map(([l,v]) => `${l}: ${v}`);
+  f.push(['Rating Notes', notes.join(' | ')]);
+  return f;
+}
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!validate()) return;
+  if (!CONFIG.SCRIPT_URL || CONFIG.SCRIPT_URL.includes('PASTE_')) {
+    toast('The Google Sheet link is not set up yet. Add your Web App URL in CONFIG at the bottom of the file.', true);
+    return;
+  }
+  const ref = makeRef();
+  const fields = buildFields(ref);
+  $('submitBtn').disabled = true;
+  $('loading').classList.add('show');
+  try {
+    const res = await fetch(CONFIG.SCRIPT_URL, {
+      method:'POST',
+      headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+      body: JSON.stringify({ fields })
+    });
+    const out = await res.json();
+    if (!out.ok) throw new Error(out.error || 'The sheet did not accept the entry.');
+    const s = scores();
+    $('refVal').textContent = out.ref || ref;
+    $('successText').textContent = `${fields[2][1]} scored ${s.pct}% (${s.grade}). The record is now in the appraisal sheet.`;
+    $('successModal').classList.add('show');
+  } catch (err) {
+    toast('Could not save the appraisal: ' + err.message + ' Please try again.', true);
+  } finally {
+    $('loading').classList.remove('show');
+    $('submitBtn').disabled = false;
+  }
+});
+
+$('anotherBtn').addEventListener('click', () => {
+  const keep = { appraisalType:$('appraisalType').value, periodStart:$('periodStart').value, periodEnd:$('periodEnd').value,
+    appraiserName:$('appraiserName').value, appraiserRole:$('appraiserRole').value, appraiserEmail:$('appraiserEmail').value, reviewDate:$('reviewDate').value };
+  form.reset();
+  Object.entries(keep).forEach(([k,v]) => $(k).value = v); // appraiser and period carry over
+  document.querySelectorAll('.staff-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.rate-word').forEach(w => w.textContent = '');
+  document.querySelectorAll('.crit-note').forEach(t => t.hidden = true);
+  document.querySelectorAll('.note-btn').forEach(b => b.textContent = '+ Add note');
+  $('panelStaff').textContent = 'No staff selected';
+  $('successModal').classList.remove('show');
+  update();
+  window.scrollTo({ top:0, behavior:'smooth' });
+});
+
+/* ---------- Helpers ---------- */
+let toastTimer;
+function toast(msg, isErr){
+  const t = $('toast'); t.textContent = msg; t.classList.toggle('error', !!isErr); t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 4800);
+}
+
+form.addEventListener('input', e => {
+  const f = e.target.closest('.field'); if (f) f.classList.remove('invalid');
+  update();
+});
+$('declaration').addEventListener('change', () => { $('declareBox').classList.remove('invalid'); update(); });
+
+/* ---------- Init ---------- */
+renderStaff();
+renderSections();
+renderOptions();
+$('reviewDate').value = new Date().toISOString().slice(0,10);
+update();
+</script>
+</body>
+</html>
