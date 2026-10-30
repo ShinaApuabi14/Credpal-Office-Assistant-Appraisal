@@ -234,8 +234,8 @@
     <p>Rate each team member on their duties, work habits and conduct for the review period. Scores update as you go, and the result is saved straight to the appraisal records.</p>
     <div class="chips">
       <span class="chip">4 team members</span>
-      <span class="chip">16 rated areas</span>
-      <span class="chip">About 10 minutes</span>
+      <span class="chip">10 rated areas</span>
+      <span class="chip">About 7 minutes</span>
     </div>
   </div>
 </header>
@@ -428,7 +428,7 @@
           </div>
         </div>
         <div class="cats" id="catBars"></div>
-        <div class="rated-count"><span>Areas rated</span><span id="ratedCount">0 / 16</span></div>
+        <div class="rated-count"><span>Areas rated</span><span id="ratedCount">0 / 10</span></div>
       </div>
       <div class="band-card">
         <h4>Grade Bands</h4>
@@ -464,7 +464,7 @@
 <script>
 /* ===== CONFIG: paste your Apps Script Web App URL here ===== */
 const CONFIG = {
-  SCRIPT_URL: 'https://script.google.com/macros/s/AKfycby3YTQWQlVfRnyWlpiWa4ttShd9m5mRxAh0TGNzuO62PFaxiN0EEZXzJgX8VPjLhNnk/exec'
+  SCRIPT_URL: 'PASTE_YOUR_WEB_APP_URL_HERE'
 };
 
 const TEAM = [
@@ -479,17 +479,11 @@ const SCALE = { 1:'Poor', 2:'Fair', 3:'Good', 4:'Very Good', 5:'Outstanding' };
 const SECTIONS = [
   { id:'core', step:'03', title:'Core Duties', sub:'How well they handle the day-to-day work of the role', items:[
     { key:'cleanliness', label:'Office cleanliness and hygiene', desc:'Keeps offices, meeting rooms, restrooms and the kitchen clean and orderly' },
-    { key:'errands',     label:'Errands and dispatch', desc:'Delivers documents, mail and parcels accurately and on time' },
-    { key:'reception',   label:'Visitor and guest handling', desc:'Receives visitors politely and directs them to the right person' },
-    { key:'refreshment', label:'Refreshments and kitchen upkeep', desc:'Serves refreshments during meetings and keeps the kitchen in order' },
-    { key:'supplies',    label:'Office supplies and inventory', desc:'Tracks consumables and reports low stock before it runs out' },
-    { key:'equipment',   label:'Care of equipment and facilities', desc:'Handles office equipment with care and reports faults quickly' }
+    { key:'errands',     label:'Errands and dispatch', desc:'Delivers documents, mail and parcels accurately and on time' }
   ]},
-  { id:'habits', step:'04', title:'Work Habits', sub:'Reliability, timekeeping and compliance', items:[
-    { key:'punctuality', label:'Punctuality and attendance', desc:'Resumes on time and is rarely absent without notice' },
+  { id:'habits', step:'04', title:'Work Habits', sub:'Reliability, time use and presentation', items:[
     { key:'timemgmt',    label:'Time management', desc:'Plans the day well and finishes tasks within expected time' },
     { key:'dependable',  label:'Dependability', desc:'Gets work done without constant reminders or follow-up' },
-    { key:'policy',      label:'Policy and safety compliance', desc:'Follows company rules, safety and security procedures' },
     { key:'appearance',  label:'Dress and appearance', desc:'Neat, well groomed and follows the dress code' }
   ]},
   { id:'behaviour', step:'05', title:'Behaviour and Attitude', sub:'How they work with people', items:[
